@@ -1,0 +1,141 @@
+#new-posts h2 {
+    margin-bottom: 1.8rem;
+    text-align: center;
+}
+
+.post-strip {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.8rem;
+    padding: 2.6rem 2.4rem;
+    overflow-x: auto;
+    background-color: #eef2f6;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: #b5cadf transparent;
+}
+
+.post {
+    flex: 0 0 auto;
+    padding: 1.2rem;
+    background-color: #faf8f3;
+    border: 1px solid #cddcea;
+    border-radius: 2.4rem;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+.post:hover {
+    border-color: #b5cadf;
+}
+
+.post.is-open {
+    box-shadow: 0 1rem 2.6rem rgba(40, 70, 110, 0.14);
+}
+
+.post-media {
+    display: flex;
+    align-items: stretch;
+    height: 42.6rem;
+}
+
+.post-photo {
+    width: 33rem;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1.6rem;
+    background-color: #dfe8f1;
+}
+
+.post-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: width 0.35s ease, margin-left 0.35s ease, opacity 0.25s ease;
+}
+
+.post.is-open .post-items {
+    width: 9.2rem;
+    margin-left: 1.2rem;
+    opacity: 1;
+}
+
+.post-items li {
+    flex: 1;
+    min-width: 9.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.4rem;
+    background-color: #cddcea;
+}
+
+.post-items img {
+    width: 5.6rem;
+    height: 5.6rem;
+    object-fit: contain;
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    padding: 1.2rem 0.4rem 0.2rem;
+}
+
+.post-title time,
+.post-title strong {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.post-side {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.post-tags {
+    display: flex;
+    gap: 0.8rem;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-width 0.35s ease, opacity 0.25s ease;
+}
+
+.post.is-open .post-tags {
+    max-width: 28rem;
+    opacity: 1;
+}
+
+.like {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.like img {
+    width: 2.4rem;
+    height: 2.4rem;
+}
+
+.like:hover {
+    transform: scale(1.12);
+}
+
+.like.is-liked {
+    background-color: #f7d3d9;
+}
