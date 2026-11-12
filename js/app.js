@@ -95,3 +95,35 @@ tabs.forEach((tab) => {
 });
 
 selectTab(document.querySelector('.cat-tab.active'));
+
+const strip = document.querySelector('.post-strip');
+
+strip.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+    const atStart = strip.scrollLeft <= 0 && e.deltaY < 0;
+    const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 1 && e.deltaY > 0;
+    if (atStart || atEnd) return;
+
+    e.preventDefault();
+    strip.scrollLeft += e.deltaY;
+}, { passive: false });
+
+const body = document.querySelector('body')
+const topBtn = document.querySelector('.top')
+
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+        body.classList.add('scroll')
+    } else {
+        body.classList.remove('scroll')
+    }
+})
+
+topBtn.addEventListener('click', (e) => {
+    e.preventDefault()
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    })
+})

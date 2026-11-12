@@ -10,11 +10,12 @@
     padding: 2.6rem 2.4rem;
     overflow-x: auto;
     background-color: #eef2f6;
-    scroll-snap-type: x proximity;
-    scrollbar-width: thin;
-    scrollbar-color: #b5cadf transparent;
+    scrollbar-width: none;
 }
 
+.post-strip::-webkit-scrollbar {
+    display: none;
+}
 .post {
     flex: 0 0 auto;
     padding: 1.2rem;
@@ -23,7 +24,7 @@
     border-radius: 2.4rem;
     cursor: pointer;
     scroll-snap-align: start;
-    transition: box-shadow 0.3s, border-color 0.3s;
+    transition: box-shadow 0.3s border-color 0.3s;
 }
 
 .post:hover {
@@ -137,5 +138,5 @@
 }
 
 .like.is-liked {
-    background-color: #f7d3d9;
+    background:#4f6f8a1c;
 }
