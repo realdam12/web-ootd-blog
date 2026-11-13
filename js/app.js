@@ -37,6 +37,7 @@ window.addEventListener('scroll', () => {
     document.body.classList.toggle('scroll', window.scrollY > 60);
 });
 
+// new post
 document.querySelectorAll('.post').forEach((post) => {
     const toggle = () => {
         const open = post.classList.toggle('is-open');
@@ -111,6 +112,8 @@ strip.addEventListener('wheel', (e) => {
 
 const body = document.querySelector('body')
 const topBtn = document.querySelector('.top')
+const mNavBtn = document.querySelector('.mob-nav-btn')
+const navLinks = document.querySelectorAll('nav ul a')
 
 window.addEventListener('scroll', () => {
     if (window.scrollY > 100) {
@@ -125,5 +128,23 @@ topBtn.addEventListener('click', (e) => {
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
+    })
+})
+
+mNavBtn.addEventListener('click', (e) => {
+    e.preventDefault()
+    body.classList.toggle('m-nav-open')
+})
+
+navLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault()
+
+        const target = document.querySelector(link.getAttribute('href'))
+        const headerH = document.querySelector('header').offsetHeight
+        const top = target.getBoundingClientRect().top + window.scrollY - headerH
+
+        window.scrollTo({ top, behavior: 'smooth' })
+        body.classList.remove('m-nav-open')
     })
 })
