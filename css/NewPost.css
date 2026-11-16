@@ -1,10 +1,11 @@
 #new-posts h2 {
-    margin-top: -5rem;
+    margin-top: -12rem;
     margin-bottom: 1.8rem;
     text-align: center;
 }
 
 .post-strip {
+    margin: 0 4.5rem;
     display: flex;
     align-items: flex-start;
     gap: 1.8rem;
@@ -17,6 +18,7 @@
 .post-strip::-webkit-scrollbar {
     display: none;
 }
+
 .post {
     flex: 0 0 auto;
     padding: 1.2rem;
@@ -48,8 +50,11 @@
     object-fit: cover;
     border-radius: 1.6rem;
     background-color: #dfe8f1;
+    transition: opacity 0.15s ease;
 }
-
+.post-photo.is-swap {
+    opacity: 0;
+}
 .post-items {
     display: flex;
     flex-direction: column;
@@ -75,6 +80,12 @@
     justify-content: center;
     border-radius: 1.4rem;
     background-color: #cddcea;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.post-items li.is-active {
+    background-color: #b5cadf;
 }
 
 .post-items img {
@@ -139,5 +150,5 @@
 }
 
 .like.is-liked {
-    background:#4f6f8a1c;
+    background: #4f6f8a1c;
 }

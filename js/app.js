@@ -33,23 +33,118 @@ const CATALOG = {
     }
 };
 
-window.addEventListener('scroll', () => {
-    document.body.classList.toggle('scroll', window.scrollY > 60);
+const body = document.body;
+const topBtn = document.querySelector('.top');
+const mNavBtn = document.querySelector('.mob-nav-btn');
+const navLinks = document.querySelectorAll('nav ul a');
+const posts = document.querySelectorAll('.post');
+const strip = document.querySelector('.post-strip');
+const panel = document.getElementById('cat-panel');
+const tabs = document.querySelectorAll('.cat-tab');
+
+new Swiper('.hero-swiper', {
+    loop: true,
+    speed: 600,
+    grabCursor: true,
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true
+    }
 });
 
-// new post
-document.querySelectorAll('.post').forEach((post) => {
-    const toggle = () => {
-        const open = post.classList.toggle('is-open');
-        post.setAttribute('aria-expanded', open);
+window.addEventListener('scroll', () => {
+    body.classList.toggle('scroll', window.scrollY > 100);
+});
+
+function swapPhoto(photo, src) {
+    if (photo.getAttribute('src') === src) return;
+
+    photo.classList.add('is-swap');
+
+    setTimeout(() => {
+        photo.onload = () => photo.classList.remove('is-swap');
+        photo.onerror = () => {
+            photo.src = photo.dataset.origin;
+            photo.classList.remove('is-swap');
+        };
+        photo.src = src;
+    }, 150);
+}
+
+function resetPhoto(post) {
+    const photo = post.querySelector('.post-photo');
+
+    post.querySelectorAll('.post-items li').forEach((li) => li.classList.remove('is-active'));
+    photo.classList.remove('is-swap');
+
+    if (photo.getAttribute('src') !== photo.dataset.origin) {
+        photo.src = photo.dataset.origin;
+    }
+}
+
+function togglePost(post) {
+    const open = post.classList.toggle('is-open');
+    post.setAttribute('aria-expanded', open);
+
+    if (!open) {
+        resetPhoto(post);
+        return;
+    }
+
+    posts.forEach((other) => {
+        if (other === post) return;
+        other.classList.remove('is-open');
+        other.setAttribute('aria-expanded', 'false');
+        resetPhoto(other);
+    });
+
+    setTimeout(() => {
+        const stripLeft = strip.getBoundingClientRect().left;
+        const postLeft = post.getBoundingClientRect().left;
+        const left = strip.scrollLeft + (postLeft - stripLeft) - (strip.clientWidth - post.offsetWidth) / 2;
+        strip.scrollTo({ left, behavior: 'smooth' });
+    }, 45);
+}
+
+posts.forEach((post) => {
+    const photo = post.querySelector('.post-photo');
+    const items = post.querySelectorAll('.post-items li');
+
+    post.setAttribute('aria-expanded', post.classList.contains('is-open'));
+    photo.dataset.origin = photo.getAttribute('src');
+
+    const pickItem = (item) => {
+        if (!item.dataset.photo) return;
+
+        const wasActive = item.classList.contains('is-active');
+
+        items.forEach((li) => li.classList.remove('is-active'));
+        if (!wasActive) item.classList.add('is-active');
+
+        swapPhoto(photo, wasActive ? photo.dataset.origin : item.dataset.photo);
     };
 
-    post.addEventListener('click', toggle);
+    items.forEach((item) => {
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            pickItem(item);
+        });
+
+        item.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.stopPropagation();
+                pickItem(item);
+            }
+        });
+    });
+
+    post.addEventListener('click', () => togglePost(post));
 
     post.addEventListener('keydown', (e) => {
         if (e.target === post && (e.key === 'Enter' || e.key === ' ')) {
             e.preventDefault();
-            toggle();
+            togglePost(post);
         }
     });
 
@@ -59,8 +154,16 @@ document.querySelectorAll('.post').forEach((post) => {
     });
 });
 
-const panel = document.getElementById('cat-panel');
-const tabs = document.querySelectorAll('.cat-tab');
+strip.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+    const atStart = strip.scrollLeft <= 0 && e.deltaY < 0;
+    const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 1 && e.deltaY > 0;
+    if (atStart || atEnd) return;
+
+    e.preventDefault();
+    strip.scrollLeft += e.deltaY;
+}, { passive: false });
 
 function renderCatalog(key) {
     const c = CATALOG[key];
@@ -97,54 +200,25 @@ tabs.forEach((tab) => {
 
 selectTab(document.querySelector('.cat-tab.active'));
 
-const strip = document.querySelector('.post-strip');
-
-strip.addEventListener('wheel', (e) => {
-    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-
-    const atStart = strip.scrollLeft <= 0 && e.deltaY < 0;
-    const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 1 && e.deltaY > 0;
-    if (atStart || atEnd) return;
-
-    e.preventDefault();
-    strip.scrollLeft += e.deltaY;
-}, { passive: false });
-
-const body = document.querySelector('body')
-const topBtn = document.querySelector('.top')
-const mNavBtn = document.querySelector('.mob-nav-btn')
-const navLinks = document.querySelectorAll('nav ul a')
-
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        body.classList.add('scroll')
-    } else {
-        body.classList.remove('scroll')
-    }
-})
-
 topBtn.addEventListener('click', (e) => {
-    e.preventDefault()
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    })
-})
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 mNavBtn.addEventListener('click', (e) => {
-    e.preventDefault()
-    body.classList.toggle('m-nav-open')
-})
+    e.preventDefault();
+    body.classList.toggle('m-nav-open');
+});
 
 navLinks.forEach((link) => {
     link.addEventListener('click', (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
-        const target = document.querySelector(link.getAttribute('href'))
-        const headerH = document.querySelector('header').offsetHeight
-        const top = target.getBoundingClientRect().top + window.scrollY - headerH
+        const target = document.querySelector(link.getAttribute('href'));
+        const headerH = document.querySelector('header').offsetHeight;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerH;
 
-        window.scrollTo({ top, behavior: 'smooth' })
-        body.classList.remove('m-nav-open')
-    })
-})
+        window.scrollTo({ top, behavior: 'smooth' });
+        body.classList.remove('m-nav-open');
+    });
+});
