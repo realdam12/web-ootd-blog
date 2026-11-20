@@ -148,10 +148,18 @@ posts.forEach((post) => {
         }
     });
 
-    post.querySelector('.like').addEventListener('click', (e) => {
+
+    strip.addEventListener('click', (e) => {
+        const btn = e.target.closest('.like');
+        if (!btn) return;
+
         e.stopPropagation();
-        e.currentTarget.classList.toggle('is-liked');
+
+        const liked = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', String(!liked));
+        btn.textContent = liked ? '♡' : '♥';
     });
+
 });
 
 strip.addEventListener('wheel', (e) => {
